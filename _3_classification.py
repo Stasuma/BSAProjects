@@ -14,7 +14,7 @@ def is_degenerated(line1):
         return "True" 
     else: 
         return "False" 
-print(is_degenerated(line1))
+print('is_degenerated ', is_degenerated(line1))
 
 #True
 #line1 =((11, 11), (11, 11)) 
@@ -32,11 +32,11 @@ print(is_degenerated(line1))
 
 
 def is_horizontal(line1): 
-    if line1[0][1]==line1[1][1]: 
+    if (line1[0][1]==line1[1][1]) and (line1[0][0]!=line1[1][0]) : 
         return "True" 
     else: 
         return "False" 
-print(is_horizontal(line1))
+print('is_horizontal ', is_horizontal(line1))
 
 #True
 #line1 =((19, 9), (11, 9)) 
@@ -50,11 +50,11 @@ print(is_horizontal(line1))
 
 
 def is_vertical(line1):
-    if line1[0][0]==line1[1][0]: 
+    if (line1[0][0]==line1[1][0]) and (line1[0][1]!=line1[1][1]): 
         return "True" 
     else: 
         return "False" 
-print(is_vertical(line1))
+print('is_vertical', is_vertical(line1))
 
 #True
 #line1 =((19, 1), (19, 10)) 
@@ -71,7 +71,7 @@ def is_inclined(line1):
         return "True" 
     else: 
         return "False" 
-print(is_inclined(line1))
+print('is_inclined', is_inclined(line1))
 
 #True
 #line1 =((11, 12), (12, 12)) 
