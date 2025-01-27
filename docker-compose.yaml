@@ -1,0 +1,64 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+      #опциональная часть
+      kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - 8080:8080
+    restart: always
+    environment:
+      - DYNAMIC_CONFIG_ENABLED: "true"
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    volumes:
+      - ~/kui/config.yml:/etc/kafkaui/dynamic_config.yaml
+
+#консоль
+# 1. docker-compose up -d - создание и запуск контейнеров
+
+# 2. (опционально) docker run -it -p 8080:8080 -e DYNAMIC_CONFIG_ENABLED=true provectuslabs/kafka-ui - запуск веб-консоль управления kafka-ui Apache Kafka в Docker
+# переход по ссылке для отображения морды кафки: http://localhost:8080
+
+# 3.  создать топик
+#3.1 docker exec -it kafka bash - подключиться к контейнеру 
+#3.2 kafka-topics --create --topic test-topic --bootstrap-server localhost:29092 --partitions 1 --replication-factor 1 - создать топик (например, test-topic):
+#3.3 kafka-topics --list --bootstrap-server localhost:29092 - проверить, что топик создан
+
+# 4. отправьть сообщение в топик
+#4.1 открыть новый терминал
+#4.2 docker ps - проверить список запущенных контейнеров (опционально)
+#4.3 docker exec -it kafka bash - подключиться к контейнеру Kafka (поскольку переход в новый терминал)
+#4.4 kafka-console-producer --topic test-topic --bootstrap-server localhost:29092 - внутри контейнера запустить консольного производителя
+#4.5 ввести сообщение
+
+# 5 получить сообщения из топика
+#5.1 открыть новый терминал
+#5.2 docker exec -it kafka bash - подключиться к контейнеру Kafka (опционально, если возникают ошибки)
+#5.3 kafka-console-consumer --topic test-topic --bootstrap-server localhost:29092 --from-beginning - запустить консольного потребителя (consumer)
+  
