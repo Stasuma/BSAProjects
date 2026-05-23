@@ -1,1 +1,1 @@
-Задачи по ИПР
+My individual projecrs 
