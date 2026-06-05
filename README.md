@@ -1,1 +1,1 @@
-My individual projecrs 
+My individual projects/tasks
